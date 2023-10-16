@@ -1,0 +1,58 @@
+.CsvFile-upload-input {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    padding-bottom: 8px;
+}
+.CsvFile-upload-input button {
+    font-size: 16px;
+    line-height: 20px;
+    padding: 8px 2rem;
+    border: none;
+    background: #000;
+    color: #fff;
+    border-radius: 12px;
+}
+.CsvFile-upload-content-os {
+    padding-bottom: 2rem;
+}
+.CsvFile-mapping-select-col-os-1 select {
+    width: 100%;
+    padding: 12px;
+    border-color: #d9d9d9;
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.02);
+    border-radius: 12px;
+    margin-bottom: 1rem;
+}
+.CsvFile-mapping-select-col-os-1 select:last-child {
+    margin-bottom: 0;
+}
+.CsvFile-mapping-select-col-os-1 {
+    width: 40%;
+}
+.CsvFile-mapping-select-row-os {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+.CsvFile-mapping-select-col-os-1 h5 {
+    font-size: 15px;
+    line-height: 20px;
+    font-weight: 400;
+    padding-bottom: 8px;
+}
+.CsvFile-mapping-data-os {
+    padding-bottom: 2rem;
+}
+.CsvFile-data-table-os table {
+    width: 100%;
+    text-align: left;
+}
+.CsvFile-data-table-os tr th {
+    padding: 1rem;
+    border-bottom: 1px solid #ddd;
+}
+.CsvFile-data-table-os tr td {
+    padding: 1rem;
+}

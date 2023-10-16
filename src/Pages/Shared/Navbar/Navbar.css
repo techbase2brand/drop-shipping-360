@@ -1,0 +1,49 @@
+.Navbar-section-os {
+    background: #1d1d1d;
+    height: 100%;
+    padding: 2rem 1rem;
+}
+.Navbar-col-os-1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 2rem;
+}
+.Navbar-col-os-1 a span {
+    font-size: 18px;
+    line-height: 24px;
+    color: #fff;
+}
+.Navbar-col-os-1 a {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+.Navbar-col-os-2 {
+    display: flex;
+    align-items: center;
+    padding-bottom: 2rem;
+}
+.profile-name-os {
+    font-size: 16px;
+    line-height: 20px;
+    color: #fff;
+}
+.Navbar-menu-heading-os {
+    font-size: 16px;
+    line-height: 20px;
+    color: #595959;
+    padding-bottom: 8px;
+}
+.Navbar-col-os-3 a {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+    font-size: 16px;
+    line-height: 20px;
+    color: #fff;
+    text-decoration: none;
+}

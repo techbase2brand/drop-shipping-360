@@ -1,0 +1,24 @@
+.Pages-row-os {
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    height: 100vh;
+}
+.Pages-col-os-1 {
+    width: 20%;
+    height: 100%;
+}
+.Pages-col-os-2 {
+    width: 80%;
+    height: 100%;
+    position: relative;
+}
+
+@media screen and (max-width: 1600px) {
+    .Pages-col-os-1 {
+        width: 25%;
+    }
+    .Pages-col-os-2 {
+        width: 75%;
+    }    
+}
