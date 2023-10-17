@@ -7,11 +7,14 @@
 .Pages-col-os-1 {
     width: 20%;
     height: 100%;
+    position: fixed;
+    left: 0;
 }
 .Pages-col-os-2 {
     width: 80%;
     height: 100%;
     position: relative;
+    margin-left: auto;
 }
 
 @media screen and (max-width: 1600px) {

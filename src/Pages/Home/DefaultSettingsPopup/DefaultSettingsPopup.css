@@ -11,15 +11,27 @@
   flex-wrap: wrap;
   padding-bottom: 1rem;
 }
+.DefaultSettingsPopup-row-os-1 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.DefaultSettingsPopup-row-os-1 .compulsary-fields-os {
+  padding-bottom: 1rem;
+}
+.compulsary-fields-os {
+  display: flex;
+  color: red;
+}
 .DefaultSettingsPopup-os {
-  position: absolute;
-  width: 100%;
+  position: fixed;
+  width: 80%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   top: 0;
-  left: 0;
+  right: 0;
   background: rgba(0, 0, 0, 0.5);
 }
 .DefaultSettingsPopup-row-os {
@@ -28,6 +40,7 @@
   background: #fff;
   padding: 3rem;
   position: relative;
+  border-radius: 8px;
 }
 .DefaultSettingsPopup-cross-btn-os {
   position: absolute;
@@ -50,16 +63,16 @@
   border-radius: 4px;
 }
 .DefaultSettingsPopup-col-os input {
-  width: 100%;
-  cursor: pointer;
+  /* width: 100%; */
+  /* cursor: pointer; */
   padding: 10px 15px;
   outline: 0;
   border: 0;
-  border-radius: 0;
+  border-radius: 8px;
   background: #e6e6e6;
   color: #000;
 }
-.DefaultSettingsPopup-submit-btn-os button {
+.DefaultSettingsPopup-submit-os button {
   font-size: 16px;
   line-height: 20px;
   padding: 8px 1rem;
@@ -68,8 +81,23 @@
   color: #fff;
   border-radius: 8px;
 }
-.DefaultSettingsPopup-submit-btn-os {
-    padding-top: 1rem;
+.DefaultSettingsPopup-submit-os {
+  padding-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.DefaultSettingsPopup-apply-default-os label {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+}
+.DefaultSettingsPopup-apply-default-os {
+  padding: 8px 1rem;
+  background: #e6e6e6;
+  border-radius: 8px;
 }
 
 /* custom checkbox starts1 */
@@ -143,7 +171,7 @@
   padding: 10px 15px;
   outline: 0;
   border: 0;
-  border-radius: 0;
+  border-radius: 8px;
   background: #e6e6e6;
   color: #000;
   appearance: none;
@@ -176,3 +204,43 @@
   border-top-color: #ccc;
 }
 /* custom checkbox ends1 */
+
+.tooptip-icon-os:hover span {
+  opacity: 1;
+  transition: 0.3s;
+}
+.tooptip-icon-os span {
+  position: absolute;
+  width: max-content;
+  left: 30px;
+  top: -10px;
+  font-size: 14px;
+  opacity: 0;
+  transition: 0.3s;
+}
+
+.tooptip-icon-os {
+  position: relative;
+  display: flex;
+}
+.tabs-os {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 2rem;
+}
+.tabs-os button {
+  padding: 8px 1rem;
+  background: #fff;
+  border: 1px solid #000;
+  border-radius: 8px;
+}
+button.tabs-os-active {
+  background: #e6e6e6;
+}
+
+@media screen and (max-width: 1600px) {
+  .DefaultSettingsPopup-os {
+    width: 75%;
+  }
+}

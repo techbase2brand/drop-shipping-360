@@ -1,25 +1,16 @@
-// import logo from "./logo.svg";
+import { createContext, useState } from "react";
 import "./App.css";
 import Pages from "./Pages/Pages/Pages";
 
+export const AppContext = createContext();
 function App() {
+  const [csvData, setCSVData] = useState([]);
+  const [file, setFile] = useState(null);
   return (
     <div className="App app-os">
-      <Pages />
-      {/* <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header> */}
+      <AppContext.Provider value={{csvData, setCSVData, file, setFile}}>
+        <Pages />
+      </AppContext.Provider>
     </div>
   );
 }

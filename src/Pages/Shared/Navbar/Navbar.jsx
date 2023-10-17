@@ -24,7 +24,7 @@ const Navbar = () => {
             <span></span>
             Data Porting
           </Link>
-          <Link to="/">
+          <Link to="/defaultsettings">
             <span></span>
             Default Settings
           </Link>

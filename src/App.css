@@ -5,6 +5,13 @@
 .default-section-os {
     padding-bottom: 2rem;
 }
+.default-padding-os {
+    padding-bottom: 2rem;
+}
 button {
     cursor: pointer;
+}
+:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
