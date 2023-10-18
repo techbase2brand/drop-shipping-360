@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Navbar.css";
 import { Link } from "react-router-dom";
 
 const Navbar = () => {
+  const [activeLink, setActiveLink] = useState("link-1");
+  const handleLink = (val) => {
+    setActiveLink(val);
+  };
   return (
     <section className="Navbar-section-os">
       <div className="Navbar-row-os">
@@ -20,11 +24,19 @@ const Navbar = () => {
         </div>
         <div className="Navbar-col-os-3">
           <div className="Navbar-menu-heading-os">Menu</div>
-          <Link to="/">
+          <Link
+            to="/"
+            className={activeLink === "link-1" ? "active" : ""}
+            onClick={() => handleLink("link-1")}
+          >
             <span></span>
             Data Porting
           </Link>
-          <Link to="/defaultsettings">
+          <Link
+            to="/defaultsettings"
+            className={activeLink === "link-2" ? "active" : ""}
+            onClick={() => handleLink("link-2")}
+          >
             <span></span>
             Default Settings
           </Link>

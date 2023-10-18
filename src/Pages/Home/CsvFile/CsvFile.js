@@ -9,11 +9,27 @@ import { AppContext } from "../../../App";
 
 const CsvFile = () => {
   // appContext
-  const { csvData, setCSVData, file, setFile } = useContext(AppContext);
-  // const [csvData, setCSVData] = useState([]);
-  // const [file, setFile] = useState(null);
+  const { csvData, setCSVData, file, setFile } =
+    useContext(AppContext);
+  const [form, setForm] = useState({
+    selectionRules: "defaultSettings",
+    selectTag: "",
+    selectSku: "",
+    belowZero: "no",
+    location: "select",
+    bufferQuantity: "no",
+    inputBufferQuantity: "",
+    expiryDate: "",
+    fileHeader: "sku",
+    shopifyHeader: "sku",
+  });  
+  // const [errorMessage, setErrorMessage] = useState({
+  //   errorBufferQuantity: "",
+  //   errorExpiryDate: "",
+  //   errorFileHeader: "",
+  //   errorShopifyHeader: ""
+  // });
   const [activePopup, setActivePopup] = useState(false);
-
   const fileInputRef = useRef(null);
 
   const handleChange = (e) => {
@@ -25,7 +41,7 @@ const CsvFile = () => {
       Papa.parse(selectedFile, {
         complete: (result) => {
           setCSVData(result.data);
-          // console.log("result.dataaaaaaaaaaa", result.data);
+          console.log("result.dataaaaaaaaaaa", result.data);
           // console.log("file.nameeeeeeee", file);
         },
         header: true,
@@ -37,15 +53,6 @@ const CsvFile = () => {
     {
       header: "SKU",
     },
-    // {
-    //   header: "Item-no",
-    // },
-    // {
-    //   header: "Description",
-    // },
-    // {
-    //   header: "Location",
-    // },
     {
       header: "Barcode",
     },
@@ -62,15 +69,19 @@ const CsvFile = () => {
     }, 1000);
   };
 
+  // handle input change
+  const handleInputChange = (val) => {
+    const { name, type, checked, value } = val.target;
+    const newValue = type === "checkbox" ? (checked ? "1" : "0") : value;
+    setForm((prevState) => ({
+      ...prevState,
+      [name]: newValue,
+    }));
+    // console.log("handleInputChange", form);
+  };
+
   const handleSubmit = () => {
-    console.log("handleSubmit");
-    // console.log("handleSubmit form", form);
-    if (activePopup) {
-      setActivePopup(false);
-    }
-    // if (fileInputRef.current) {
-    //   fileInputRef.current.click();
-    // }
+    console.log("handleSubmit form", form);
   };
 
   return (
@@ -93,7 +104,9 @@ const CsvFile = () => {
                 Upload csv
               </button>
               {csvData.length > 0 && (
-                <p>{csvData.length > 0 ? "File uploaded successfully" : ""}</p>
+                <p className="success-message-os">
+                  File uploaded successfully.
+                </p>
               )}
             </div>
             {file?.name && <p>{file?.name}</p>}
@@ -104,8 +117,8 @@ const CsvFile = () => {
               <SubHeading title="Mapping" />
               <div className="CsvFile-mapping-select-row-os">
                 <div className="CsvFile-mapping-select-col-os-1">
-                  <h5>File headers</h5>
-                  {csvData.map((values, valueIndex) => (
+                  <h5>File headers :</h5>
+                  {/* {csvData.map((values, valueIndex) => (
                     <select key={valueIndex}>
                       {Object.entries(values).map(([key, value], index) => (
                         <React.Fragment key={index}>
@@ -114,19 +127,29 @@ const CsvFile = () => {
                         </React.Fragment>
                       ))}
                     </select>
-                  ))}
+                  ))} */}
 
-                  {/* {csvData.map((value) => {
-                    {Object.entries(value).map(([key, value], index) =>(
-                      <select key={index}>
-                        <option value={key}>{key}</option>
-                      </select>
-                    ))}
-                  })} */}
+                  <select
+                    onChange={handleInputChange}
+                    name="fileHeader"
+                    value={form.fileHeader}
+                  >
+                    {Object.keys(csvData[0])
+                      .splice(1)
+                      .map((header, index) => (
+                        <option key={index} value={header}>
+                          {header}
+                        </option>
+                      ))}
+                  </select>
                 </div>
                 <div className="CsvFile-mapping-select-col-os-1">
-                  <h5>Shopify invetory headers</h5>
-                  <select>
+                  <h5>Shopify invetory headers :</h5>
+                  <select
+                    onChange={handleInputChange}
+                    value={form.shopifyHeader}
+                    name="shopifyHeader"
+                  >
                     {shopifyCSVData.map((values, index) => (
                       <option key={index} value={values.header}>
                         {values.header}
@@ -134,6 +157,16 @@ const CsvFile = () => {
                     ))}
                   </select>
                 </div>
+              </div>
+
+              <div className="DefaultSettingsPopup-submit-os">
+                <button
+                  className="DefaultSettingsPopup-submit-btn-os"
+                  type="button"
+                  onClick={handleSubmit}
+                >
+                  Finnal sumbit
+                </button>
               </div>
             </div>
           )}
@@ -190,7 +223,9 @@ const CsvFile = () => {
           <DefaultSettingsPopup
             activePopup={activePopup}
             setActivePopup={setActivePopup}
-            handleSubmit={handleSubmit}
+            handleInputChange={handleInputChange}
+            form={form}
+            setForm= {setForm}
           />
         )}
       </div>

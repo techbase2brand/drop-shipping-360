@@ -46,4 +46,9 @@
     line-height: 20px;
     color: #fff;
     text-decoration: none;
+    padding: 8px;
+    border-radius: 8px;
+}
+.Navbar-col-os-3 a.active {
+    background: #333;
 }

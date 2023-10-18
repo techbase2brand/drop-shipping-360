@@ -76,10 +76,16 @@
   font-size: 16px;
   line-height: 20px;
   padding: 8px 1rem;
-  border: none;
-  background: #000;
-  color: #fff;
   border-radius: 8px;
+}
+.DefaultSettingsPopup-back-btn-os {
+  background: #fff;
+  border: 1px solid #000;
+}
+.DefaultSettingsPopup-submit-btn-os {
+  background: #000;
+  border: 1px solid #000;
+  color: #fff;
 }
 .DefaultSettingsPopup-submit-os {
   padding-top: 1rem;
@@ -181,10 +187,6 @@
 .select select::-ms-expand {
   display: none;
 }
-.select select:disabled {
-  opacity: 0.5;
-  pointer-events: none;
-}
 .select__arrow {
   position: absolute;
   top: 16px;
@@ -199,9 +201,6 @@
 .select select:hover ~ .select__arrow,
 .select select:focus ~ .select__arrow {
   border-top-color: #000;
-}
-.select select:disabled ~ .select__arrow {
-  border-top-color: #ccc;
 }
 /* custom checkbox ends1 */
 
@@ -222,21 +221,6 @@
 .tooptip-icon-os {
   position: relative;
   display: flex;
-}
-.tabs-os {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding-bottom: 2rem;
-}
-.tabs-os button {
-  padding: 8px 1rem;
-  background: #fff;
-  border: 1px solid #000;
-  border-radius: 8px;
-}
-button.tabs-os-active {
-  background: #e6e6e6;
 }
 
 @media screen and (max-width: 1600px) {

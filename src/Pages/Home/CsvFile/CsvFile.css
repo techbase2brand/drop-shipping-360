@@ -62,3 +62,12 @@
 .CsvFile-data-table-os tr td {
     padding: 1rem;
 }
+.CsvFile-data-table-os thead tr {
+    background: #cecece;
+}
+.CsvFile-data-table-os tbody tr:nth-child(odd) {
+    background: #ebebeb;
+}
+.success-message-os {
+    color: green;
+}
