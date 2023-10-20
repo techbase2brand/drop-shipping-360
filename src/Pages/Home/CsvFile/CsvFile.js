@@ -7,6 +7,7 @@ import SubHeading from "../../Shared/SubHeading/SubHeading";
 import DefaultSettingsPopup from "../DefaultSettingsPopup/DefaultSettingsPopup";
 import { AppContext } from "../../../App";
 import Button from "../../Shared/Button/Button";
+import axios from "axios";
 
 const CsvFile = () => {
   // default expiryDate
@@ -35,10 +36,11 @@ const CsvFile = () => {
   const [activeRules, setActiveRules] = useState("rules");
   const [activePopup, setActivePopup] = useState(false);
   const [formConfirmMessage, setFormConfirmMessage] = useState("");
+  const [nonExistTag, setNonExistTag] = useState("");
   const fileInputRef = useRef(null);
   const [form, setForm] = useState({
     selectionRules: "defaultSettings",
-    selectTag: "",
+    selectTag: [],
     selectSku: "",
     belowZero: "no",
     location: "",
@@ -47,6 +49,7 @@ const CsvFile = () => {
     expiryDate: getDefaultExpiryDate(),
     fileHeader: "",
     shopifyHeader: "sku",
+    singleTag: "",
   });
   const [formError, setFormError] = useState({
     bufferQuantity: "",
@@ -93,32 +96,82 @@ const CsvFile = () => {
     }, 1000);
   };
 
-  // handle input change
-  const handleInputChange = (val) => {
-    const { name, type, checked, value } = val.target;
-    const newValue = type === "checkbox" ? (checked ? "1" : "0") : value;
-    setForm((prevState) => ({
-      ...prevState,
-      [name]: newValue,
-    }));
-    // console.log("handleInputChange", form);
-    setFormError((prevState) => ({
-      ...prevState,
-      [name]: "",
-    }));
+  // // handle input change
+  // const handleInputChange = (val) => {
+  //   const { name, type, checked, value } = val.target;
+  //   const newValue = type === "checkbox" ? (checked ? "1" : "0") : value;
+  //   setForm((prevState) => ({
+  //     ...prevState,
+  //     [name]: newValue,
+  //   }));
+  //   // console.log("handleInputChange", form);
+  //   setFormError((prevState) => ({
+  //     ...prevState,
+  //     [name]: "",
+  //   }));
+  // };
+  const handleInputChange = async (val) => {
+    if (val && val.target) {
+      const { name, type, checked, value } = val.target;
+      const newValue = type === "checkbox" ? (checked ? "1" : "0") : value;
+      setForm((prevState) => ({
+        ...prevState,
+        [name]: newValue,
+      }));
+      setFormError((prevState) => ({
+        ...prevState,
+        [name]: "",
+      }));
+    }
   };
 
   // handle Selection Continue
-  const handleSelectedRules = (val) => {
+  // const handleSelectedRules = async (val) => {
+  //   let isValid = true;
+  //   // console.log("form.selectTag if");
+  //   if (form.selectionRules === "tag" && !form.singleTag) {
+  //     setFormError((prevState) => ({
+  //       ...prevState,
+  //       selectTag: "Select tag",
+  //     }));
+  //     isValid = false;
+  //   }
+  //   if (form.selectionRules === "tag" && !nonExistTag) {
+  //     setFormError((prevState) => ({
+  //       ...prevState,
+  //       selectTag: "Tag not exist",
+  //     }));
+  //     isValid = false;
+  //   } else {
+  //     setFormError((prevState) => ({
+  //       ...prevState,
+  //       selectTag: "",
+  //     }));
+  //     setActiveRules(val);
+  //     // console.log("form.selectTag else");
+  //   }
+  // };
+
+  const handleSelectedRules = async (val) => {
     let isValid = true;
-    if (form.selectionRules === "tag" && !form.selectTag) {
+
+    if (form.selectionRules === "tag" && !form.singleTag) {
       setFormError((prevState) => ({
         ...prevState,
         selectTag: "Select tag",
       }));
       isValid = false;
-    }
-    if (isValid) {
+    } else if (form.selectionRules === "tag" && !nonExistTag) {
+      setFormError((prevState) => ({
+        ...prevState,
+        selectTag: "Tag not exist",
+      }));
+      isValid = false;
+    } else {
+      setFormError((prevState) => ({
+        ...prevState,
+        selectTag: "",
+      }));
       setActiveRules(val);
     }
   };
@@ -160,6 +213,7 @@ const CsvFile = () => {
     }
   };
 
+  // Handle final submit
   const handleSubmit = () => {
     let isValid = true;
     if (!form.fileHeader) {
@@ -172,6 +226,9 @@ const CsvFile = () => {
     if (isValid) {
       console.log("handleSubmit form", form);
       setFormConfirmMessage("Form submitted successfully");
+      setTimeout(() => {
+        setFormConfirmMessage("");
+      }, 5000);
     }
   };
 
@@ -326,6 +383,9 @@ const CsvFile = () => {
             handleSelectedRules={handleSelectedRules}
             activeRules={activeRules}
             setActiveRules={setActiveRules}
+            nonExistTag={nonExistTag}
+            setNonExistTag={setNonExistTag}
+            setFormError={setFormError}
           />
         )}
       </div>

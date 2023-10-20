@@ -160,9 +160,9 @@
 .control--radio-os input:disabled ~ .control-indicatoros:after {
   background: #7b7b7b;
 }
-.select {
+.select-tags-os {
   position: relative;
-  width: 30%;
+  width: 50%;
 }
 .select select {
   display: inline-block;

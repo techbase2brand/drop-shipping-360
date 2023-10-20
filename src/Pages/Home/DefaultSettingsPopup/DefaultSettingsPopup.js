@@ -1,23 +1,118 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./DefaultSettingsPopup.css";
 import MainHeading from "../../Shared/MainHeading/MainHeading";
 import TooltipIcon from "../../../Assets/tooltip-icon.svg";
 import { AppContext } from "../../../App";
 import Button from "../../Shared/Button/Button";
 import ButtonWhite from "../../Shared/ButtonWhite/ButtonWhite";
+import axios from "axios";
+import Select from "react-select";
 
 const DefaultSettingsPopup = ({
   activePopup,
   setActivePopup,
   handleInputChange,
   form,
+  setForm,
   handleSave,
   formError,
   handleSelectedRules,
   activeRules,
-  setActiveRules,
+  nonExistTag,
+  setNonExistTag,
+  setFormError,
 }) => {
   const { csvData } = useContext(AppContext);
+  const [data, setData] = useState([]);
+  // const [nonExistTag, setNonExistTag] = useState([]);
+
+  const locationUrl = `http://localhost:4000/api/fetchStoreLocation`;
+  const getLocations = async () => {
+    try {
+      const response = await axios.get(locationUrl);
+      setData(response?.data?.response?.data?.shop?.locations?.edges);
+      // console.log("response.dataaaaaaa", data);
+    } catch (error) {
+      console.log("fetchStoreLocation errorrrrrrrr", error);
+    }
+  };
+
+  useEffect(() => {
+    getLocations();
+  }, []);
+
+  // const HandleSelectTags = async (selectedOptions) => {
+  //   const selectedValues = selectedOptions.map((option) => option.value);
+  //   setForm((prevState) => ({
+  //     ...prevState,
+  //     selectTag: selectedValues,
+  //   }));
+
+  //    // when tag selected
+  //     if (form.selectionRules === "tag") {
+  //       // tag checking api
+  //       const tagUrl = "http://localhost:4000/api/metchShopTags";
+  //       console.log("form.selectTag", form.selectTag);
+  //       try {
+  //         const response = await axios.post(tagUrl, {
+  //           tags: form.selectTag,
+  //         });
+  //         console.log("tagApiResponseeeee", response);
+  //         // if (response) {
+  //         //   setActiveRules(val);
+  //         // }
+  //       } catch (error) {
+  //         console.log("tagApiError", error);
+  //         // setActiveRules("rules");
+  //       }
+  //     }
+  // };
+
+  // const HandleSelectTags = (selectedOptions) => {
+  //   const selectedValues = selectedOptions.map((option) => option.value);
+  //   setForm((prevState) => ({
+  //     ...prevState,
+  //     selectTag: selectedValues,
+  //     singleTag: selectedValues,
+  //   }));
+  // };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (form.selectionRules === "tag" && form.selectTag.length > 0) {
+        const tagUrl = "http://localhost:4000/api/metchShopTags";
+        try {
+          const response = await axios.post(tagUrl, {
+            tags: form.singleTag,
+          });
+          console.log("form.selectTag", form.singleTag);
+          setNonExistTag(response?.data?.status);
+          console.log("nonExistTaggggggg try", nonExistTag);
+        } catch (error) {
+          console.log("metchShopTags errorrrr", error);
+          // console.log("object message: ", error?.response?.data?.status);
+          setNonExistTag(error?.response?.data?.status);
+          console.log("nonExistTaggggggg catch", nonExistTag);
+        }
+      }
+    };
+
+    fetchData(); // Call the async function here
+    // if (nonExistTag) {
+    //   setFormError((prevState) => ({
+    //     ...prevState,
+    //     selectTag: "",
+    //   }));
+    // }
+  }, [form.selectionRules, form.selectTag]);
+
+  const HandleSelectTags = (selectedOptions) => {
+    setForm((prevState) => ({
+      ...prevState,
+      selectTag: selectedOptions.map((option) => option.value),
+      singleTag: selectedOptions[selectedOptions.length - 1]?.value, // Set the latest value in singleTag
+    }));
+  };
 
   return (
     <section className="DefaultSettingsPopup-os">
@@ -79,8 +174,8 @@ const DefaultSettingsPopup = ({
                 <div className="control-indicatoros"></div>
                 Apply this to specific product's tag
               </label>
-              <div className="select">
-                <select
+              <div className="select-tags-os">
+                {/* <select
                   name="selectTag"
                   value={form.selectTag}
                   onChange={handleInputChange}
@@ -92,8 +187,35 @@ const DefaultSettingsPopup = ({
                       <option key={index} value={tag.Protact_tags}>
                         {tag.Protact_tags}
                       </option>
+                      
                     ))}
-                </select>
+                </select> */}
+                <Select
+                  name="selectTag"
+                  value={form.selectTag.map((value) => ({
+                    value,
+                    label: value,
+                  }))}
+                  // onChange={(selectedOptions) => {
+                  //   const selectedValues = selectedOptions.map(
+                  //     (option) => option.value
+                  //   );
+
+                  //   setForm((prevState) => ({
+                  //     ...prevState,
+                  //     selectTag: selectedValues,
+                  //   }));
+                  // }}
+
+                  onChange={HandleSelectTags}
+                  isDisabled={form.selectionRules !== "tag"}
+                  isMulti={true}
+                  options={csvData.map((tag, index) => ({
+                    value: tag.Protact_tags,
+                    label: tag.Protact_tags,
+                  }))}
+                />
+
                 <div className="select__arrow"></div>
               </div>
             </div>
@@ -135,7 +257,7 @@ const DefaultSettingsPopup = ({
 
             <div className="DefaultSettingsPopup-col-os">
               <label className="control-os control--radio-os">
-                <input type="radio" name="selectionRules" value="allSku" />
+                <input type="radio" name="selectionRules" value="selectSku" />
                 <div className="control-indicatoros"></div>
                 Specific SKU's in the uploaded sheet
               </label>
@@ -198,9 +320,20 @@ const DefaultSettingsPopup = ({
                   onChange={handleInputChange}
                 >
                   <option value="">select</option>
-                  <option value="option1">Location1</option>
-                  <option value="option2">Location2</option>
+                  {data.length > 0 &&
+                    data.map((loc, index) => {
+                      const locationId = (loc?.node?.id).split(
+                        "gid://shopify/Location/"
+                      );
+                      // console.log("idArray", locationId[1]);
+                      return (
+                        <option key={index} value={locationId}>
+                          {loc?.node?.name}
+                        </option>
+                      );
+                    })}
                 </select>
+
                 <div className="select__arrow"></div>
               </div>
             </div>
