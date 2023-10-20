@@ -72,12 +72,6 @@
   background: #e6e6e6;
   color: #000;
 }
-.DefaultSettingsPopup-submit-os button {
-  font-size: 16px;
-  line-height: 20px;
-  padding: 8px 1rem;
-  border-radius: 8px;
-}
 .DefaultSettingsPopup-back-btn-os {
   background: #fff;
   border: 1px solid #000;

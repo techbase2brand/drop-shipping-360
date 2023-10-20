@@ -6,48 +6,55 @@ import MainHeading from "../../Shared/MainHeading/MainHeading";
 import SubHeading from "../../Shared/SubHeading/SubHeading";
 import DefaultSettingsPopup from "../DefaultSettingsPopup/DefaultSettingsPopup";
 import { AppContext } from "../../../App";
+import Button from "../../Shared/Button/Button";
 
 const CsvFile = () => {
-  // appContext
-  const { csvData, setCSVData, file, setFile } =
-    useContext(AppContext);
+  // default expiryDate
+  const getDefaultExpiryDate = () => {
+    const currentDate = new Date();
+    const nextDay = new Date(currentDate);
+    nextDay.setDate(currentDate.getDate() + 1);
+    const year = nextDay.getFullYear();
+    const month = String(nextDay.getMonth() + 1).padStart(2, "0");
+    const day = String(nextDay.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  // Function to validate the expiry date
+  const validateExpiryDate = (selectedDate) => {
+    const currentDate = new Date();
+    const selectedDateObj = new Date(selectedDate);
+    if (selectedDateObj <= currentDate) {
+      return "Expiry date must be in the future.";
+    }
+    return "";
+  };
+
+  // appContext and states
+  const { csvData, setCSVData, file, setFile } = useContext(AppContext);
+  const [activeRules, setActiveRules] = useState("rules");
+  const [activePopup, setActivePopup] = useState(false);
+  const [formConfirmMessage, setFormConfirmMessage] = useState("");
+  const fileInputRef = useRef(null);
   const [form, setForm] = useState({
     selectionRules: "defaultSettings",
     selectTag: "",
     selectSku: "",
     belowZero: "no",
-    location: "select",
+    location: "",
     bufferQuantity: "no",
     inputBufferQuantity: "",
-    expiryDate: "",
-    fileHeader: "sku",
+    expiryDate: getDefaultExpiryDate(),
+    fileHeader: "",
     shopifyHeader: "sku",
-  });  
-  // const [errorMessage, setErrorMessage] = useState({
-  //   errorBufferQuantity: "",
-  //   errorExpiryDate: "",
-  //   errorFileHeader: "",
-  //   errorShopifyHeader: ""
-  // });
-  const [activePopup, setActivePopup] = useState(false);
-  const fileInputRef = useRef(null);
-
-  const handleChange = (e) => {
-    const selectedFile = e.target.files[0];
-    // console.log("selectedFileeeeeeeee", selectedFile);
-
-    if (selectedFile) {
-      setFile(selectedFile);
-      Papa.parse(selectedFile, {
-        complete: (result) => {
-          setCSVData(result.data);
-          console.log("result.dataaaaaaaaaaa", result.data);
-          // console.log("file.nameeeeeeee", file);
-        },
-        header: true,
-      });
-    }
-  };
+  });
+  const [formError, setFormError] = useState({
+    bufferQuantity: "",
+    expiryDate: "",
+    fileHeader: "",
+    inputBufferQuantity: "",
+    selectTag: "",
+  });
 
   const shopifyCSVData = [
     {
@@ -58,7 +65,24 @@ const CsvFile = () => {
     },
   ];
 
-  const handleUploadCsv = () => {
+  // handle change for csv upload
+  const handleCsvInputChanges = (e) => {
+    const selectedFile = e.target.files[0];
+
+    if (selectedFile) {
+      setFile(selectedFile);
+      Papa.parse(selectedFile, {
+        complete: (result) => {
+          setCSVData(result.data);
+          // console.log("result.dataaaaaaaaaaa", result.data);
+          // console.log("file.nameeeeeeee", file);
+        },
+        header: true,
+      });
+    }
+  };
+
+  const handleUploadCsvBtn = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
@@ -78,10 +102,77 @@ const CsvFile = () => {
       [name]: newValue,
     }));
     // console.log("handleInputChange", form);
+    setFormError((prevState) => ({
+      ...prevState,
+      [name]: "",
+    }));
+  };
+
+  // handle Selection Continue
+  const handleSelectedRules = (val) => {
+    let isValid = true;
+    if (form.selectionRules === "tag" && !form.selectTag) {
+      setFormError((prevState) => ({
+        ...prevState,
+        selectTag: "Select tag",
+      }));
+      isValid = false;
+    }
+    if (isValid) {
+      setActiveRules(val);
+    }
+  };
+
+  const handleSave = () => {
+    const calendarError = validateExpiryDate(form.expiryDate);
+    let isValid = true;
+
+    if (form.bufferQuantity === "no") {
+      setFormError((prevState) => ({
+        ...prevState,
+        bufferQuantity: "Choose yes in buffer quantity",
+      }));
+      isValid = false;
+    }
+
+    if (form.bufferQuantity === "yes" && !form.inputBufferQuantity) {
+      setFormError((prevState) => ({
+        ...prevState,
+        inputBufferQuantity: "Enter buffer quantity in the input",
+      }));
+      isValid = false;
+    }
+
+    if (form.expiryDate && calendarError) {
+      setFormError((prevState) => ({
+        ...prevState,
+        expiryDate: calendarError,
+      }));
+      isValid = false;
+    }
+
+    // console.log("formErrorrrrrrrrrrr", formError);
+
+    if (isValid) {
+      if (activePopup) {
+        setActivePopup(false);
+      }
+    }
   };
 
   const handleSubmit = () => {
-    console.log("handleSubmit form", form);
+    let isValid = true;
+    if (!form.fileHeader) {
+      setFormError((prevState) => ({
+        ...prevState,
+        fileHeader: "Select header",
+      }));
+      return (isValid = false);
+    }
+    if (isValid) {
+      console.log("handleSubmit form", form);
+      setFormConfirmMessage("Form submitted successfully");
+    }
   };
 
   return (
@@ -97,10 +188,10 @@ const CsvFile = () => {
                 ref={fileInputRef}
                 type="file"
                 accept=".csv"
-                onChange={handleChange}
+                onChange={handleCsvInputChanges}
                 style={{ display: "none" }}
               />
-              <button onClick={handleUploadCsv} type="button">
+              <button onClick={handleUploadCsvBtn} type="button">
                 Upload csv
               </button>
               {csvData.length > 0 && (
@@ -134,6 +225,7 @@ const CsvFile = () => {
                     name="fileHeader"
                     value={form.fileHeader}
                   >
+                    <option value="">select</option>
                     {Object.keys(csvData[0])
                       .splice(1)
                       .map((header, index) => (
@@ -142,6 +234,11 @@ const CsvFile = () => {
                         </option>
                       ))}
                   </select>
+                  {formError.fileHeader && (
+                    <div className="ereror-message-os">
+                      {formError.fileHeader}
+                    </div>
+                  )}
                 </div>
                 <div className="CsvFile-mapping-select-col-os-1">
                   <h5>Shopify invetory headers :</h5>
@@ -158,15 +255,13 @@ const CsvFile = () => {
                   </select>
                 </div>
               </div>
-
-              <div className="DefaultSettingsPopup-submit-os">
-                <button
-                  className="DefaultSettingsPopup-submit-btn-os"
+              <div className="CsvFile-submit-btn-os pt-3">
+                <Button
                   type="button"
                   onClick={handleSubmit}
-                >
-                  Finnal sumbit
-                </button>
+                  title="Final Submit"
+                />
+                <div className="success-message-os">{formConfirmMessage}</div>
               </div>
             </div>
           )}
@@ -225,7 +320,12 @@ const CsvFile = () => {
             setActivePopup={setActivePopup}
             handleInputChange={handleInputChange}
             form={form}
-            setForm= {setForm}
+            setForm={setForm}
+            handleSave={handleSave}
+            formError={formError}
+            handleSelectedRules={handleSelectedRules}
+            activeRules={activeRules}
+            setActiveRules={setActiveRules}
           />
         )}
       </div>

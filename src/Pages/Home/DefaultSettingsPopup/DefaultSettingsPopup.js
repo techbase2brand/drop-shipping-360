@@ -1,188 +1,26 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import "./DefaultSettingsPopup.css";
 import MainHeading from "../../Shared/MainHeading/MainHeading";
 import TooltipIcon from "../../../Assets/tooltip-icon.svg";
 import { AppContext } from "../../../App";
-// import axios from "axios";
+import Button from "../../Shared/Button/Button";
+import ButtonWhite from "../../Shared/ButtonWhite/ButtonWhite";
 
 const DefaultSettingsPopup = ({
   activePopup,
   setActivePopup,
   handleInputChange,
-  form
+  form,
+  handleSave,
+  formError,
+  handleSelectedRules,
+  activeRules,
+  setActiveRules,
 }) => {
   const { csvData } = useContext(AppContext);
-  const [activeRules, setActiveRules] = useState("rules");
-  // console.log("csvData in popuppppp", csvData);
-
-  // const locationUrl = `https://2771-122-176-49-230.ngrok-free.app/api/fetchStoreLocation`;
-  // const getLocations = async () => {
-  //   try {
-  //     const response = await axios.get(locationUrl);
-  //     console.log("response.dataaaaaaa", response);
-  //   } catch (error) {
-  //     console.log("errorrrrrrrr", error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   getLocations();
-  // }, []);
-
-  // const [form, setForm] = useState({
-  //   selectionRules: "defaultSettings",
-  //   selectTag: "select",
-  //   selectSku: "select",
-  //   belowZero: "",
-  //   location: "",
-  //   bufferQuantity: "",
-  //   inputBufferQuantity: "",
-  //   expiryDate: "",
-  // });
-
-  // const handleInputChange = (val) => {
-  //   const { name, type, checked, value } = val.target;
-  //   const newValue = type === "checkbox" ? (checked ? "1" : "0") : value;
-  //   // console.log("handleInputChange values =", name, ":", newValue);
-  //   setForm((prevState) => ({
-  //     ...prevState,
-  //     [name]: newValue,
-  //   }));
-  //   // console.log("handleInputChange", form);
-  // };
-  // const handleSubmit = () => {
-  //   console.log("handleSubmit form", form);
-  //   if (activePopup) {
-  //     setActivePopup(false);
-  //   }
-  // };
-
-  // const handleRules = () => {
-  //   setActiveRules("selectionRules");
-  //   // alert("Success");
-  // };
-  const handleSelectedRules = (val) => {
-    setActiveRules(val);
-  };
-
-  const handleSave = () => {
-    if (activePopup) {
-      setActivePopup(false);
-    }
-  };
 
   return (
     <section className="DefaultSettingsPopup-os">
-      {/* <form onSubmit={handleSubmit} className="DefaultSettingsPopup-row-os">
-        <div className="DefaultSettingsPopup-cross-btn-os">
-          <button
-            onClick={() => {
-              if (activePopup) {
-                setActivePopup(false);
-              }
-            }}
-          >
-            X
-          </button>
-        </div>
-        <div className="DefaultSettingsPopup-col-os">
-          <label className="control-os control-checkbox-os">
-            Apply below rules to all excels
-            <input
-              type="checkbox"
-              name="allExcels"
-              checked={form.allExcels === "1"}
-              onChange={handleInputChange}
-            />
-            <div className="control-indicatoros"></div>
-          </label>
-        </div>
-
-        <div className="DefaultSettingsPopup-col-os">
-          <label className="control-os control--radio-os">
-            All SKU's
-            <input
-              type="radio"
-              name="sku"
-              checked={form.sku === "allSku"}
-              value="allSku"
-              onChange={handleInputChange}
-            />
-            <div className="control-indicatoros"></div>
-          </label>
-
-          <label className="control-os control--radio-os">
-            Select SKU's
-            <input
-              type="radio"
-              name="sku"
-              checked={form.sku === "selectedSku"}
-              value="selectedSku"
-              onChange={handleInputChange}
-            />
-            <div className="control-indicatoros"></div>
-          </label>
-          <div>
-            <input
-              type="text"
-              placeholder="Enter sku"
-              name="inputSku"
-              disabled={form.sku !== "selectedSku"}
-              value={form.inputSku}
-              onChange={handleInputChange}
-            />
-          </div>
-        </div>
-
-        <div className="DefaultSettingsPopup-col-os">
-          <label className="control-os control-checkbox-os">
-            Do you want to marks these products continue to sell below zero
-            <input
-              type="checkbox"
-              name="belowZero"
-              value={form.belowZero === "1"}
-              onChange={handleInputChange}
-            />
-            <div className="control-indicatoros"></div>
-          </label>
-        </div>
-
-        <div className="DefaultSettingsPopup-col-os">
-          <span>Do you want to update quantity to specific location</span>
-          <div className="select">
-            <select
-              name="location"
-              value={form.location}
-              onChange={handleInputChange}
-            >
-              <option value="select">Select</option>
-              <option value="option1">Option1</option>
-              <option value="option2">Option2</option>
-            </select>
-            <div className="select__arrow"></div>
-          </div>
-        </div>
-
-        <div className="DefaultSettingsPopup-col-os">
-          <label className="control-os control-checkbox-os">
-            Do you want to apply buffer quantity
-            <input
-              type="checkbox"
-              name="bufferQuantity"
-              checked={form.bufferQuantity === "1"}
-              onChange={handleInputChange}
-            />
-            <div className="control-indicatoros"></div>
-          </label>
-        </div>
-
-        <div className="DefaultSettingsPopup-submit-os">
-          <button type="button" onClick={handleSubmit}>
-            Apply
-          </button>
-        </div>
-      </form> */}
-
       <div className="DefaultSettingsPopup-row-os">
         <div className="DefaultSettingsPopup-cross-btn-os">
           <button
@@ -214,7 +52,7 @@ const DefaultSettingsPopup = ({
                 Apply your default settings at all products in the excels
               </label>
             </div>
-            
+
             <div className="DefaultSettingsPopup-col-os">
               <label className="control-os control--radio-os">
                 <input
@@ -248,7 +86,7 @@ const DefaultSettingsPopup = ({
                   onChange={handleInputChange}
                   disabled={form.selectionRules !== "tag"}
                 >
-                  <option value="select">select</option>
+                  <option value="">select</option>
                   {csvData.length > 0 &&
                     csvData.map((tag, index) => (
                       <option key={index} value={tag.Protact_tags}>
@@ -259,6 +97,11 @@ const DefaultSettingsPopup = ({
                 <div className="select__arrow"></div>
               </div>
             </div>
+            {formError.selectTag && (
+              <div className="ereror-message-os pb-3">
+                {formError.selectTag}
+              </div>
+            )}
             {/* <div className="DefaultSettingsPopup-col-os">
               <label className="control-os control--radio-os">
                 <input
@@ -302,16 +145,14 @@ const DefaultSettingsPopup = ({
               </div>
             </div>
 
-            <div className="DefaultSettingsPopup-submit-os">
-              <button
-                className="DefaultSettingsPopup-submit-btn-os"
+            <div className="pt-2">
+              <Button
                 type="button"
                 onClick={() => {
                   handleSelectedRules("selectionRules");
                 }}
-              >
-                Continue
-              </button>
+                title="Continue"
+              />
             </div>
           </form>
         )}
@@ -356,7 +197,7 @@ const DefaultSettingsPopup = ({
                   value={form.location}
                   onChange={handleInputChange}
                 >
-                  <option value="select">select</option>
+                  <option value="">select</option>
                   <option value="option1">Location1</option>
                   <option value="option2">Location2</option>
                 </select>
@@ -402,6 +243,16 @@ const DefaultSettingsPopup = ({
                 </div>
               </div>
             </div>
+            {formError.bufferQuantity && (
+              <div className="ereror-message-os pb-3">
+                {formError.bufferQuantity}
+              </div>
+            )}
+            {formError.inputBufferQuantity && (
+              <div className="ereror-message-os pb-3">
+                {formError.inputBufferQuantity}
+              </div>
+            )}
 
             <div className="DefaultSettingsPopup-row-os-1">
               <span className="compulsary-fields-os">*</span>
@@ -416,22 +267,18 @@ const DefaultSettingsPopup = ({
                 />
               </div>
             </div>
+            {formError.expiryDate && (
+              <div className="ereror-message-os">{formError.expiryDate}</div>
+            )}
             <div className="DefaultSettingsPopup-submit-os">
-              <button
-                className="DefaultSettingsPopup-back-btn-os"
+              <ButtonWhite
+                type={"button"}
                 onClick={() => {
                   handleSelectedRules("rules");
                 }}
-              >
-                Back
-              </button>
-              <button
-                className="DefaultSettingsPopup-submit-btn-os"
-                type="button"
-                onClick={handleSave}
-              >
-                Save
-              </button>
+                title={"Back"}
+              />
+              <Button type={"button"} onClick={handleSave} title={"Save"} />
             </div>
           </form>
         )}

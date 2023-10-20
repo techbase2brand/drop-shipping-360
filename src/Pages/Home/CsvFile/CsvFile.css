@@ -71,3 +71,9 @@
 .success-message-os {
     color: green;
 }
+.CsvFile-submit-btn-os {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
