@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import "./CsvFile.css";
 import { useState } from "react";
 import Papa from "papaparse";
@@ -33,6 +33,7 @@ const CsvFile = () => {
 
   // appContext and states
   const { csvData, setCSVData, file, setFile } = useContext(AppContext);
+  // const [defaultSettingData, setDefaultSettingData] = useState([]);
   const [activeRules, setActiveRules] = useState("rules");
   const [activePopup, setActivePopup] = useState(false);
   const [formConfirmMessage, setFormConfirmMessage] = useState("");
@@ -42,7 +43,7 @@ const CsvFile = () => {
     selectionRules: "defaultSettings",
     selectTag: [],
     selectSku: "",
-    belowZero: "no",
+    belowZero: "DENY",
     location: "",
     bufferQuantity: "no",
     inputBufferQuantity: "",
@@ -68,6 +69,41 @@ const CsvFile = () => {
     },
   ];
 
+  // fetched Defaut Settings
+  const defaultSettingApiUrl = `http://localhost:4000/api/fetchDefautSetting`;
+  const getDefaultSettings = async () => {
+    try {
+      const response = await axios.get(defaultSettingApiUrl, {
+        shop: "https://om-test12.myshopify.com",
+      });
+      // console.log("getDefaultSettings-response", response?.data?.response);
+      if (response?.data?.response?.id) {
+        setForm((prevState) => ({
+          ...prevState,
+          belowZero: response?.data?.response?.continueSell,
+          bufferQuantity: "yes",
+          inputBufferQuantity: response?.data?.response?.bufferQqantity,
+          expiryDate: formatDate(response?.data?.response?.expireDate),
+          location: response?.data?.response?.locations,
+        }));
+      }
+    } catch (error) {
+      console.log("fetchStoreLocation errorrrrrrrr", error);
+    }
+  };
+  // Function to format the date as YYYY-MM-DD
+  const formatDate = (isoDate) => {
+    const date = new Date(isoDate);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  useEffect(() => {
+    getDefaultSettings();
+  }, []);
+
   // handle change for csv upload
   const handleCsvInputChanges = (e) => {
     const selectedFile = e.target.files[0];
@@ -85,6 +121,7 @@ const CsvFile = () => {
     }
   };
 
+  // Handle csv upload button
   const handleUploadCsvBtn = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
@@ -125,33 +162,7 @@ const CsvFile = () => {
     }
   };
 
-  // handle Selection Continue
-  // const handleSelectedRules = async (val) => {
-  //   let isValid = true;
-  //   // console.log("form.selectTag if");
-  //   if (form.selectionRules === "tag" && !form.singleTag) {
-  //     setFormError((prevState) => ({
-  //       ...prevState,
-  //       selectTag: "Select tag",
-  //     }));
-  //     isValid = false;
-  //   }
-  //   if (form.selectionRules === "tag" && !nonExistTag) {
-  //     setFormError((prevState) => ({
-  //       ...prevState,
-  //       selectTag: "Tag not exist",
-  //     }));
-  //     isValid = false;
-  //   } else {
-  //     setFormError((prevState) => ({
-  //       ...prevState,
-  //       selectTag: "",
-  //     }));
-  //     setActiveRules(val);
-  //     // console.log("form.selectTag else");
-  //   }
-  // };
-
+  // handle selection continue button
   const handleSelectedRules = async (val) => {
     let isValid = true;
 
@@ -174,8 +185,10 @@ const CsvFile = () => {
       }));
       setActiveRules(val);
     }
+    return isValid;
   };
 
+  // Handle save button
   const handleSave = () => {
     const calendarError = validateExpiryDate(form.expiryDate);
     let isValid = true;
@@ -214,7 +227,7 @@ const CsvFile = () => {
   };
 
   // Handle final submit
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     let isValid = true;
     if (!form.fileHeader) {
       setFormError((prevState) => ({
@@ -224,11 +237,34 @@ const CsvFile = () => {
       return (isValid = false);
     }
     if (isValid) {
-      console.log("handleSubmit form", form);
-      setFormConfirmMessage("Form submitted successfully");
-      setTimeout(() => {
-        setFormConfirmMessage("");
-      }, 5000);
+      // console.log("handleSubmit form", form);
+      // setFormConfirmMessage("Form submitted successfully");
+      // setTimeout(() => {
+      //   setFormConfirmMessage("");
+      // }, 5000);
+      const csvApiUrl = "http://localhost:4000/api/addCsvFile";
+      try {
+        const response = await axios.post(csvApiUrl, {
+          csvFileData: csvData,
+          productTags: form.selectTag,
+          allExcels: "",
+          defaultSetting: "",
+          continueSell: form.belowZero,
+          locations: form.location,
+          bufferQqantity: form.inputBufferQuantity,
+          expireDate: form.expiryDate,
+          fileHeaders: form.fileHeader,
+          shopifyInventoryHeaders: form.shopifyHeader,
+        });
+        console.log("response of addCsvFile api", response);
+        // console.log("handleSubmit form", form);
+        setFormConfirmMessage("Form submitted successfully");
+        setTimeout(() => {
+          setFormConfirmMessage("");
+        }, 5000);
+      } catch (error) {
+        console.log("csv data api error", error);
+      }
     }
   };
 
@@ -286,7 +322,7 @@ const CsvFile = () => {
                     {Object.keys(csvData[0])
                       .splice(1)
                       .map((header, index) => (
-                        <option key={index} value={header}>
+                        <option key={index} value={header.toLowerCase()}>
                           {header}
                         </option>
                       ))}

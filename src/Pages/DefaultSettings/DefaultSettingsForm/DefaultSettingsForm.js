@@ -8,7 +8,8 @@ import { useEffect } from "react";
 // import TooltipIcon from "../../../Assets/tooltip-icon.svg";
 
 const DefaultSettingsForm = () => {
-  const [data, setData] = useState([]);
+  const [locationData, setLocationData] = useState([]);
+  const [defaultSettingData, setDefaultSettingData] = useState([]);
   // default expiryDate
   const getDefaultExpiryDate = () => {
     const currentDate = new Date();
@@ -29,6 +30,7 @@ const DefaultSettingsForm = () => {
     }
     return "";
   };
+
   const [form, setForm] = useState({
     belowZero: "DENY",
     location: "",
@@ -42,19 +44,53 @@ const DefaultSettingsForm = () => {
     inputBufferQuantity: "",
   });
 
+  // fetched store location
   const locationUrl = `http://localhost:4000/api/fetchStoreLocation`;
   const getLocations = async () => {
     try {
       const response = await axios.get(locationUrl);
-      setData(response?.data?.response?.data?.shop?.locations?.edges);
+      setLocationData(response?.data?.response?.data?.shop?.locations?.edges);
       // console.log("response.dataaaaaaa", data);
     } catch (error) {
       console.log("fetchStoreLocation errorrrrrrrr", error);
     }
   };
 
+  // fetched Defaut Settings
+  const defaultSettingApiUrl = `http://localhost:4000/api/fetchDefautSetting`;
+  const getDefaultSettings = async () => {
+    try {
+      const response = await axios.get(defaultSettingApiUrl, {
+        shop: "https://om-test12.myshopify.com",
+      });
+      // console.log("getDefaultSettings-response", response?.data?.response);
+      setDefaultSettingData(response?.data?.response);
+      if (response?.data?.response.id) {
+        setForm((preState) => ({
+          ...preState,
+          belowZero: response?.data?.response?.continueSell,
+          bufferQuantity: "yes",
+          inputBufferQuantity: response?.data?.response?.bufferQqantity,
+          expiryDate: formatDate(response?.data?.response?.expireDate),
+          location: response?.data?.response?.locations,
+        }));
+      }
+    } catch (error) {
+      console.log("fetchStoreLocation errorrrrrrrr", error);
+    }
+  };
+  // Function to format the date as YYYY-MM-DD
+  const formatDate = (isoDate) => {
+    const date = new Date(isoDate);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
   useEffect(() => {
     getLocations();
+    getDefaultSettings();
   }, []);
 
   // handle input change
@@ -109,6 +145,7 @@ const DefaultSettingsForm = () => {
       const defaultSettingUrl = `http://localhost:4000/api/saveDefautSetting`;
       try {
         const response = await axios.post(defaultSettingUrl, {
+          // shop : "https://om-test12.myshopify.com",
           continueSell: form.belowZero,
           locations: form.location,
           bufferQqantity: form.inputBufferQuantity,
@@ -168,14 +205,14 @@ const DefaultSettingsForm = () => {
                 onChange={handleInputChange}
               >
                 <option value="">select</option>
-                {data.length > 0 &&
-                  data.map((loc, index) => {
+                {locationData.length > 0 &&
+                  locationData.map((loc, index) => {
                     const locationId = (loc?.node?.id).split(
                       "gid://shopify/Location/"
                     );
                     // console.log("idArray", locationId[1]);
                     return (
-                      <option key={index} value={locationId}>
+                      <option key={index} value={locationId[1]}>
                         {loc?.node?.name}
                       </option>
                     );

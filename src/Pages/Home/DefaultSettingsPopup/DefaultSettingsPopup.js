@@ -18,9 +18,9 @@ const DefaultSettingsPopup = ({
   formError,
   handleSelectedRules,
   activeRules,
-  nonExistTag,
+  // nonExistTag,
   setNonExistTag,
-  setFormError,
+  // setFormError,
 }) => {
   const { csvData } = useContext(AppContext);
   const [data, setData] = useState([]);
@@ -87,12 +87,12 @@ const DefaultSettingsPopup = ({
           });
           console.log("form.selectTag", form.singleTag);
           setNonExistTag(response?.data?.status);
-          console.log("nonExistTaggggggg try", nonExistTag);
+          // console.log("nonExistTaggggggg try", nonExistTag);
         } catch (error) {
           console.log("metchShopTags errorrrr", error);
           // console.log("object message: ", error?.response?.data?.status);
           setNonExistTag(error?.response?.data?.status);
-          console.log("nonExistTaggggggg catch", nonExistTag);
+          // console.log("nonExistTaggggggg catch", nonExistTag);
         }
       }
     };
@@ -292,8 +292,8 @@ const DefaultSettingsPopup = ({
                 <input
                   type="radio"
                   name="belowZero"
-                  value="yes"
-                  checked={form.belowZero === "yes"}
+                  value="CONTINUE"
+                  checked={form.belowZero === "CONTINUE"}
                   onChange={handleInputChange}
                 />
                 <div className="control-indicatoros"></div>
@@ -303,8 +303,8 @@ const DefaultSettingsPopup = ({
                 <input
                   type="radio"
                   name="belowZero"
-                  value="no"
-                  checked={form.belowZero === "no"}
+                  value="DENY"
+                  checked={form.belowZero === "DENY"}
                   onChange={handleInputChange}
                 />
                 <div className="control-indicatoros"></div>
@@ -327,7 +327,7 @@ const DefaultSettingsPopup = ({
                       );
                       // console.log("idArray", locationId[1]);
                       return (
-                        <option key={index} value={locationId}>
+                        <option key={index} value={locationId[1]}>
                           {loc?.node?.name}
                         </option>
                       );

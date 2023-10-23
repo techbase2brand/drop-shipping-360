@@ -40,6 +40,14 @@ const Navbar = () => {
             <span></span>
             Default Settings
           </Link>
+          {/* <Link
+            to="/signup"
+            className={activeLink === "link-3" ? "active" : ""}
+            onClick={() => handleLink("link-3")}
+          >
+            <span></span>
+            Login
+          </Link> */}
         </div>
       </div>
     </section>

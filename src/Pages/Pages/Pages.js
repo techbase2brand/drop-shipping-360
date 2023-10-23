@@ -5,6 +5,7 @@ import Home from "../Home/Home/Home";
 import Navbar from "../Shared/Navbar/Navbar";
 import Header from "../Shared/Header/Header";
 import DefaultSettings from "../DefaultSettings/DefaultSettings/DefaultSettings";
+import Signup from "../Signup/Signup";
 
 const Pages = () => {
   return (
@@ -16,10 +17,13 @@ const Pages = () => {
         <div className="Pages-col-os-2">
           <Header />
           <Routes>
-            <Route path="/" element={<Home />} />z
+            <Route path="/" element={<Home />} />
           </Routes>
           <Routes>
-            <Route path="/defaultsettings" element={<DefaultSettings />} />z
+            <Route path="/defaultsettings" element={<DefaultSettings />} />
+          </Routes>
+          <Routes>
+            <Route path="/signup" element={<Signup />} />
           </Routes>
         </div>
       </div>
