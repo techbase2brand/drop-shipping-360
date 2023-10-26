@@ -10,6 +10,8 @@ import { useEffect } from "react";
 const DefaultSettingsForm = () => {
   const [locationData, setLocationData] = useState([]);
   const [defaultSettingData, setDefaultSettingData] = useState([]);
+  const [formConfirmMessage, setFormConfirmMessage] = useState("");
+
   // default expiryDate
   const getDefaultExpiryDate = () => {
     const currentDate = new Date();
@@ -76,7 +78,7 @@ const DefaultSettingsForm = () => {
         }));
       }
     } catch (error) {
-      console.log("fetchStoreLocation errorrrrrrrr", error);
+      console.log("fetchDefautSetting errorrrrrrrr", error);
     }
   };
   // Function to format the date as YYYY-MM-DD
@@ -154,6 +156,7 @@ const DefaultSettingsForm = () => {
         // console.log("form.selectTag", form.singleTag);
         // setNonExistTag(response?.data?.status);
         console.log("saveDefautSetting responseeee", response);
+        setFormConfirmMessage("Setting save successfully.");
       } catch (error) {
         console.log("saveDefautSetting errorrrr", error);
         // console.log("object message: ", error?.response?.data?.status);
@@ -167,11 +170,11 @@ const DefaultSettingsForm = () => {
       <div className="container-os">
         <form className="DefaultSettings-row-os">
           <div className="default-padding-os">
-            <MainHeading title="Roles" />
+            <MainHeading title="Default Settings" />
           </div>
 
           <div className="DefaultSettingsPopup-col-os">
-            Sell below zero
+            <span className="key-values-os">Sell below zero :</span>
             <label className="control-os control--radio-os">
               Yes
               <input
@@ -197,7 +200,9 @@ const DefaultSettingsForm = () => {
           </div>
 
           <div className="DefaultSettingsPopup-col-os">
-            <span>Choose your warehouse location</span>
+            <span className="key-values-os">
+              Choose your warehouse location :
+            </span>
             <div className="select">
               <select
                 name="location"
@@ -225,7 +230,7 @@ const DefaultSettingsForm = () => {
           <div className="DefaultSettingsPopup-row-os-1">
             <span className="compulsary-fields-os">*</span>
             <div className="DefaultSettingsPopup-col-os">
-              Buffer quantity
+              <span className="key-values-os">Buffer quantity :</span>
               <label className="control-os control--radio-os">
                 Yes
                 <input
@@ -261,12 +266,12 @@ const DefaultSettingsForm = () => {
             </div>
           </div>
           {formError.bufferQuantity && (
-            <div className="ereror-message-os pb-3">
+            <div className="error-message-os pb-3">
               {formError.bufferQuantity}
             </div>
           )}
           {formError.inputBufferQuantity && (
-            <div className="ereror-message-os pb-3">
+            <div className="error-message-os pb-3">
               {formError.inputBufferQuantity}
             </div>
           )}
@@ -274,7 +279,7 @@ const DefaultSettingsForm = () => {
           <div className="DefaultSettingsPopup-row-os-1">
             <span className="compulsary-fields-os">*</span>
             <div className="DefaultSettingsPopup-col-os">
-              Expiry date
+              <span className="key-values-os">Expiry date :</span>
               <input
                 type="date"
                 placeholder="Enter sku"
@@ -285,9 +290,12 @@ const DefaultSettingsForm = () => {
             </div>
           </div>
           {formError.expiryDate && (
-            <div className="ereror-message-os">{formError.expiryDate}</div>
+            <div className="error-message-os">{formError.expiryDate}</div>
           )}
-          <Button type="button" onClick={handleSave} title="Save" />
+          <div className="CsvFile-submit-btn-os">
+            <Button type="button" onClick={handleSave} title="Save" />
+            <div className="success-message-os">{formConfirmMessage}</div>
+          </div>
         </form>
       </div>
     </section>

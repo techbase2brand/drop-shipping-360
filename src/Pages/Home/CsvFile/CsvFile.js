@@ -272,9 +272,9 @@ const CsvFile = () => {
     <section className="CsvFiles-section-os">
       <div className="container-os">
         <div className="CsvFiles-csv-upload-data-os">
-          <div className="default-padding-os">
+          {/* <div className="default-padding-os">
             <MainHeading title="Home" />
-          </div>
+          </div> */}
           <div className="CsvFile-upload-content-os">
             <div className="CsvFile-upload-input">
               <input
@@ -322,13 +322,13 @@ const CsvFile = () => {
                     {Object.keys(csvData[0])
                       .splice(1)
                       .map((header, index) => (
-                        <option key={index} value={header.toLowerCase()}>
+                        <option key={index} value={header}>
                           {header}
                         </option>
                       ))}
                   </select>
                   {formError.fileHeader && (
-                    <div className="ereror-message-os">
+                    <div className="error-message-os">
                       {formError.fileHeader}
                     </div>
                   )}

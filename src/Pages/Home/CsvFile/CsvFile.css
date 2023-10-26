@@ -39,8 +39,12 @@
     overflow-y: scroll; */
 }
 .CsvFile-data-table-os {
-    /* max-height: 450px;
-    overflow: scroll; */
+    width: 100%;
+    overflow-x: auto;
+    /* max-height: 350px; */
+    box-shadow: 0 4px 30px rgba(0,0,0,.1);
+    padding: 8px;
+    background: #fff;
 }
 .CsvFile-mapping-select-col-os-1 h5 {
     font-size: 15px;

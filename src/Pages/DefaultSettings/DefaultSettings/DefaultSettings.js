@@ -5,7 +5,7 @@ import DefaultSettingsForm from "../DefaultSettingsForm/DefaultSettingsForm";
 const DefaultSettings = () => {
   return (
     <div className="DefaultSettings-page-os">
-      <PageTitleBar title="Default Settings Page" />
+      {/* <PageTitleBar title="Default Settings Page" /> */}
       <DefaultSettingsForm />
     </div>
   );
