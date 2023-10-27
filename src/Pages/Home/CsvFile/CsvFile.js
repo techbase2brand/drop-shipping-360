@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useRef } from "react";
 import "./CsvFile.css";
 import { useState } from "react";
 import Papa from "papaparse";
-import MainHeading from "../../Shared/MainHeading/MainHeading";
 import SubHeading from "../../Shared/SubHeading/SubHeading";
 import DefaultSettingsPopup from "../DefaultSettingsPopup/DefaultSettingsPopup";
 import { AppContext } from "../../../App";
@@ -33,12 +32,17 @@ const CsvFile = () => {
 
   // appContext and states
   const { csvData, setCSVData, file, setFile } = useContext(AppContext);
-  // const [defaultSettingData, setDefaultSettingData] = useState([]);
+  const fileInputRef = useRef(null);
+  const [defaultSettingsData, setDefaultSettingsData] = useState(false);
   const [activeRules, setActiveRules] = useState("rules");
   const [activePopup, setActivePopup] = useState(false);
   const [formConfirmMessage, setFormConfirmMessage] = useState("");
   const [nonExistTag, setNonExistTag] = useState("");
-  const fileInputRef = useRef(null);
+  // const [selectionRules, setSelectionRules] = useState(
+  //   defaultSettingsData ? "allExcels" : "defaultSettings"
+  // );
+
+
   const [form, setForm] = useState({
     selectionRules: "defaultSettings",
     selectTag: [],
@@ -51,7 +55,9 @@ const CsvFile = () => {
     fileHeader: "",
     shopifyHeader: "sku",
     singleTag: "",
+    id: "",
   });
+
   const [formError, setFormError] = useState({
     bufferQuantity: "",
     expiryDate: "",
@@ -69,28 +75,6 @@ const CsvFile = () => {
     },
   ];
 
-  // fetched Defaut Settings
-  const defaultSettingApiUrl = `http://localhost:4000/api/fetchDefautSetting`;
-  const getDefaultSettings = async () => {
-    try {
-      const response = await axios.get(defaultSettingApiUrl, {
-        shop: "https://om-test12.myshopify.com",
-      });
-      // console.log("getDefaultSettings-response", response?.data?.response);
-      if (response?.data?.response?.id) {
-        setForm((prevState) => ({
-          ...prevState,
-          belowZero: response?.data?.response?.continueSell,
-          bufferQuantity: "yes",
-          inputBufferQuantity: response?.data?.response?.bufferQqantity,
-          expiryDate: formatDate(response?.data?.response?.expireDate),
-          location: response?.data?.response?.locations,
-        }));
-      }
-    } catch (error) {
-      console.log("fetchStoreLocation errorrrrrrrr", error);
-    }
-  };
   // Function to format the date as YYYY-MM-DD
   const formatDate = (isoDate) => {
     const date = new Date(isoDate);
@@ -100,9 +84,51 @@ const CsvFile = () => {
     return `${year}-${month}-${day}`;
   };
 
+  // fetched Defaut Settings
+  const defaultSettingApiUrl = `http://localhost:4000/api/fetchDefautSetting`;
+  const getDefaultSettings = async () => {
+    try {
+      const response = await axios.get(defaultSettingApiUrl, {
+        shop: "https://om-test12.myshopify.com",
+      });
+      if (response?.data?.response?.id) {
+        setDefaultSettingsData(true);
+      }
+      // console.log("getDefaultSettings-response", response?.data?.response?.id);
+      if (response?.data?.response?.id) {
+        setForm((prevState) => ({
+          ...prevState,
+          belowZero: response?.data?.response?.continueSell,
+          bufferQuantity: "yes",
+          inputBufferQuantity: response?.data?.response?.bufferQqantity,
+          expiryDate: formatDate(response?.data?.response?.expireDate),
+          location: response?.data?.response?.locations,
+          id: response?.data?.response?.id,
+        }));
+      }
+    } catch (error) {
+      console.log("fetchStoreLocation errorrrrrrrr", error);
+    }
+  };
+
+
+
+  useEffect(() => {
+    if(defaultSettingsData){
+      setForm((prevState)=> ({
+        ...prevState,
+        selectionRules : "allExcels" 
+      }))
+    }
+  }, [defaultSettingsData]);
+
+ 
+
   useEffect(() => {
     getDefaultSettings();
   }, []);
+  // console.log("defaultSettingsData", defaultSettingsData);
+  // console.log("formmmmmmmmmm", form);
 
   // handle change for csv upload
   const handleCsvInputChanges = (e) => {
@@ -159,6 +185,7 @@ const CsvFile = () => {
         ...prevState,
         [name]: "",
       }));
+      console.log("newValueeeeeeeee", newValue)
     }
   };
 
@@ -169,7 +196,7 @@ const CsvFile = () => {
     if (form.selectionRules === "tag" && !form.singleTag) {
       setFormError((prevState) => ({
         ...prevState,
-        selectTag: "Select tag",
+        selectTag: "Please select valid tag",
       }));
       isValid = false;
     } else if (form.selectionRules === "tag" && !nonExistTag) {
@@ -245,10 +272,10 @@ const CsvFile = () => {
       const csvApiUrl = "http://localhost:4000/api/addCsvFile";
       try {
         const response = await axios.post(csvApiUrl, {
+          defaultSetting: form.selectionRules,
           csvFileData: csvData,
           productTags: form.selectTag,
-          allExcels: "",
-          defaultSetting: "",
+          // allExcels: "",
           continueSell: form.belowZero,
           locations: form.location,
           bufferQqantity: form.inputBufferQuantity,
@@ -258,7 +285,7 @@ const CsvFile = () => {
         });
         console.log("response of addCsvFile api", response);
         // console.log("handleSubmit form", form);
-        setFormConfirmMessage("Form submitted successfully");
+        setFormConfirmMessage("Form submitted successfully.");
         setTimeout(() => {
           setFormConfirmMessage("");
         }, 5000);
@@ -284,9 +311,14 @@ const CsvFile = () => {
                 onChange={handleCsvInputChanges}
                 style={{ display: "none" }}
               />
-              <button onClick={handleUploadCsvBtn} type="button">
+              {/* <button onClick={handleUploadCsvBtn} type="button">
                 Upload csv
-              </button>
+              </button> */}
+              <Button
+                onClick={handleUploadCsvBtn}
+                type="button"
+                title="Upload csv"
+              />
               {csvData.length > 0 && (
                 <p className="success-message-os">
                   File uploaded successfully.
@@ -348,13 +380,11 @@ const CsvFile = () => {
                   </select>
                 </div>
               </div>
-              <div className="CsvFile-submit-btn-os pt-3">
-                <Button
-                  type="button"
-                  onClick={handleSubmit}
-                  title="Final Submit"
-                />
-                <div className="success-message-os">{formConfirmMessage}</div>
+              <div className="CsvFile-submit-btn-os pt-4">
+                {formConfirmMessage && (
+                  <div className="success-message-os">{formConfirmMessage}</div>
+                )}
+                <Button type="button" onClick={handleSubmit} title="Submit" />
               </div>
             </div>
           )}
@@ -422,6 +452,7 @@ const CsvFile = () => {
             nonExistTag={nonExistTag}
             setNonExistTag={setNonExistTag}
             setFormError={setFormError}
+            defaultSettingsData={defaultSettingsData}
           />
         )}
       </div>

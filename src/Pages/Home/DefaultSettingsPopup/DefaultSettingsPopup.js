@@ -7,6 +7,7 @@ import Button from "../../Shared/Button/Button";
 import ButtonWhite from "../../Shared/ButtonWhite/ButtonWhite";
 import axios from "axios";
 import Select from "react-select";
+import Input from "../../Shared/Input/Input";
 
 const DefaultSettingsPopup = ({
   activePopup,
@@ -20,7 +21,7 @@ const DefaultSettingsPopup = ({
   activeRules,
   // nonExistTag,
   setNonExistTag,
-  // setFormError,
+  defaultSettingsData,
 }) => {
   const { csvData } = useContext(AppContext);
   const [data, setData] = useState([]);
@@ -130,23 +131,25 @@ const DefaultSettingsPopup = ({
         </div>
         {activeRules === "rules" && (
           <form className="DefaultSettingsPopup-form-os">
-            <div className="default-padding-os">
+            <div className="DefaultSettingsPopup-heading-os">
               <MainHeading title="Selection for rules" />
             </div>
 
-            <div className="DefaultSettingsPopup-col-os">
-              <label className="control-os control--radio-os">
-                <input
-                  type="radio"
-                  name="selectionRules"
-                  value="defaultSettings"
-                  checked={form.selectionRules === "defaultSettings"}
-                  onChange={handleInputChange}
-                />
-                <div className="control-indicatoros"></div>
-                Apply your default settings at all products in the excels
-              </label>
-            </div>
+            {!defaultSettingsData && (
+              <div className="DefaultSettingsPopup-col-os">
+                <label className="control-os control--radio-os">
+                  <input
+                    type="radio"
+                    name="selectionRules"
+                    value="defaultSettings"
+                    checked={form.selectionRules === "defaultSettings"}
+                    onChange={handleInputChange}
+                  />
+                  <div className="control-indicatoros"></div>
+                  Apply your default settings at all products in the excels
+                </label>
+              </div>
+            )}
 
             <div className="DefaultSettingsPopup-col-os">
               <label className="control-os control--radio-os">
@@ -196,17 +199,6 @@ const DefaultSettingsPopup = ({
                     value,
                     label: value,
                   }))}
-                  // onChange={(selectedOptions) => {
-                  //   const selectedValues = selectedOptions.map(
-                  //     (option) => option.value
-                  //   );
-
-                  //   setForm((prevState) => ({
-                  //     ...prevState,
-                  //     selectTag: selectedValues,
-                  //   }));
-                  // }}
-
                   onChange={HandleSelectTags}
                   isDisabled={form.selectionRules !== "tag"}
                   isMulti={true}
@@ -255,7 +247,13 @@ const DefaultSettingsPopup = ({
 
             <div className="DefaultSettingsPopup-col-os">
               <label className="control-os control--radio-os">
-                <input type="radio" name="selectionRules" value="selectSku" />
+                <input
+                  type="radio"
+                  name="selectionRules"
+                  value="selectSku"
+                  checked={form.selectionRules === "selectSku"}
+                  onChange={handleInputChange}
+                />
                 <div className="control-indicatoros"></div>
                 Specific SKU's in the uploaded sheet
               </label>
@@ -279,69 +277,78 @@ const DefaultSettingsPopup = ({
 
         {activeRules === "selectionRules" && (
           <form className="DefaultSettingsPopup-form-os">
-            <div className="default-padding-os">
+            <div className="DefaultSettingsPopup-heading-os">
               <MainHeading title="Rules Settings" />
             </div>
 
-            <div className="DefaultSettingsPopup-col-os">
-              <span className="key-values-os">Sell below zero :</span>
-              <label className="control-os control--radio-os">
-                Yes
-                <input
-                  type="radio"
-                  name="belowZero"
-                  value="CONTINUE"
-                  checked={form.belowZero === "CONTINUE"}
-                  onChange={handleInputChange}
-                />
-                <div className="control-indicatoros"></div>
-              </label>
-              <label className="control-os control--radio-os">
-                No
-                <input
-                  type="radio"
-                  name="belowZero"
-                  value="DENY"
-                  checked={form.belowZero === "DENY"}
-                  onChange={handleInputChange}
-                />
-                <div className="control-indicatoros"></div>
-              </label>
-            </div>
-
-            <div className="DefaultSettingsPopup-col-os">
-              <span className="key-values-os">
-                Choose your warehouse location :
-              </span>
-              <div className="select">
-                <select
-                  name="location"
-                  value={form.location}
-                  onChange={handleInputChange}
-                >
-                  <option value="">select</option>
-                  {data.length > 0 &&
-                    data.map((loc, index) => {
-                      const locationId = (loc?.node?.id).split(
-                        "gid://shopify/Location/"
-                      );
-                      // console.log("idArray", locationId[1]);
-                      return (
-                        <option key={index} value={locationId[1]}>
-                          {loc?.node?.name}
-                        </option>
-                      );
-                    })}
-                </select>
-
-                <div className="select__arrow"></div>
+            <div className="DefaultSettingsPopup-input-row-os">
+              <div className="DefaultSettingsPopup-input-col-os-1">
+                <span className="key-values-os">Sell below zero :</span>
+              </div>
+              <div className="DefaultSettingsPopup-input-col-os-2">
+                <label className="control-os control--radio-os">
+                  Yes
+                  <input
+                    type="radio"
+                    name="belowZero"
+                    value="CONTINUE"
+                    checked={form.belowZero === "CONTINUE"}
+                    onChange={handleInputChange}
+                  />
+                  <div className="control-indicatoros"></div>
+                </label>
+                <label className="control-os control--radio-os">
+                  No
+                  <input
+                    type="radio"
+                    name="belowZero"
+                    value="DENY"
+                    checked={form.belowZero === "DENY"}
+                    onChange={handleInputChange}
+                  />
+                  <div className="control-indicatoros"></div>
+                </label>
               </div>
             </div>
 
-            <div className="DefaultSettingsPopup-row-os-1">
-              <span className="compulsary-fields-os">*</span>
-              <div className="DefaultSettingsPopup-col-os">
-                <span className="key-values-os">Buffer quantity:</span>
+            <div className="DefaultSettingsPopup-input-row-os">
+              <div className="DefaultSettingsPopup-input-col-os-1">
+                <span className="key-values-os">
+                  Choose your warehouse location :
+                </span>
+              </div>
+              <div className="DefaultSettingsPopup-input-col-os-2">
+                <div className="DefaultSettingsPopup-inputs-os">
+                  <select
+                    name="location"
+                    value={form.location}
+                    onChange={handleInputChange}
+                  >
+                    <option value="">select</option>
+                    {data.length > 0 &&
+                      data.map((loc, index) => {
+                        const locationId = (loc?.node?.id).split(
+                          "gid://shopify/Location/"
+                        );
+                        // console.log("idArray", locationId[1]);
+                        return (
+                          <option key={index} value={locationId[1]}>
+                            {loc?.node?.name}
+                          </option>
+                        );
+                      })}
+                  </select>
+                  <div className="select__arrow"></div>
+                </div>
+              </div>
+            </div>
+
+            <div className="DefaultSettingsPopup-input-row-os">
+              <div className="DefaultSettingsPopup-input-col-os-1">
+                <span className="compulsary-fields-os">*</span>
+                <span className="key-values-os">Buffer quantity :</span>
+              </div>
+              <div className="DefaultSettingsPopup-input-col-os-2">
                 <label className="control-os control--radio-os">
                   Yes
                   <input
@@ -364,12 +371,12 @@ const DefaultSettingsPopup = ({
                   />
                   <div className="control-indicatoros"></div>
                 </label>
-                <div>
-                  <input
+                <div className="DefaultSettingsPopup-inputs-os">
+                  <Input
                     type="text"
-                    placeholder="Enter quantity"
+                    placeholder="Quantity"
                     name="inputBufferQuantity"
-                    value={form.inputBufferQuantity}
+                    value={form.bufferQuantity === "yes" ? form.inputBufferQuantity : "0"}
                     onChange={handleInputChange}
                     disabled={form.bufferQuantity !== "yes"}
                   />
@@ -387,11 +394,13 @@ const DefaultSettingsPopup = ({
               </div>
             )}
 
-            <div className="DefaultSettingsPopup-row-os-1">
-              <span className="compulsary-fields-os">*</span>
-              <div className="DefaultSettingsPopup-col-os">
+            <div className="DefaultSettingsPopup-input-row-os">
+              <div className="DefaultSettingsPopup-input-col-os-1">
+                <span className="compulsary-fields-os">*</span>
                 <span className="key-values-os">Expiry date :</span>
-                <input
+              </div>
+              <div className="DefaultSettingsPopup-input-col-os-2">
+                <Input
                   type="date"
                   placeholder="Enter sku"
                   name="expiryDate"

@@ -1,9 +1,16 @@
 .Button-os button {
     font-size: 16px;
     line-height: 20px;
+    font-weight: 500;
     padding: 8px 1rem;
-    border-radius: 8px;
-    background: #000;
-    border: 1px solid #000;
+    border-radius: 20px;
+    background: #AD243B;
+    border: 1px solid #AD243B;
     color: #fff;
+    transition: 0.3s;
+}
+.Button-os button:hover {
+    background: #4b111b;
+    border: 1px solid #4b111b;
+    transition: 0.3s;
 }

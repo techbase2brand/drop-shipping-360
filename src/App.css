@@ -16,8 +16,17 @@ button {
     opacity: 0.5;
     cursor: not-allowed !important;
 }
+input::placeholder {
+    color: #ACACAC;
+}
 .error-message-os {
     color: red;
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
 
 .pb-1 {
@@ -29,6 +38,9 @@ button {
 .pb-3 {
     padding-bottom: 1rem;
 }
+.pb-4 {
+    padding-bottom: 1.5rem;
+}
 .pt-1 {
     padding-top: 8px;
 }
@@ -37,4 +49,7 @@ button {
 }
 .pt-3 {
     padding-top: 1rem;
+}
+.pt-4 {
+    padding-top: 1.5rem;
 }

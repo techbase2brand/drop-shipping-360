@@ -62,6 +62,7 @@
 .CsvFile-data-table-os tr th {
     padding: 1rem;
     border-bottom: 1px solid #ddd;
+    font-weight: 500;
 }
 .CsvFile-data-table-os tr td {
     padding: 1rem;
@@ -78,6 +79,7 @@
 .CsvFile-submit-btn-os {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     flex-wrap: wrap;
     gap: 1rem;
 }

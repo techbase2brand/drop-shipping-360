@@ -15,14 +15,33 @@ const Signup = () => {
     phoneNumber: "",
     confirmPassword: "",
   });
-  console.log(formData, "formData");
+  // console.log(formData, "formData");
 
-  const [errors, setErrors] = useState({});
+  const [formError, setFormError] = useState({
+    fullName: "",
+    email: "",
+    password: "",
+    phoneNumber: "",
+    confirmPassword: "",
+  });
+
+  // const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+
+    setFormError((prevState) => ({
+      ...prevState,
+      [name]: "",
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
+    const isValid = validateForm();
+    if (isValid) {
       // The form is valid, proceed with registration
       try {
         const response = await fetch(
@@ -37,14 +56,6 @@ const Signup = () => {
         );
         if (response.ok) {
           const data = await response.json();
-
-          // setFormData({
-          //   fullName: "",
-          //   email: "",
-          //   password: "",
-          //   phoneNumber: "",
-          //   confirmPassword: "",
-          // });
 
           navigate("/login");
           // Handle success, e.g., redirect to a success page
@@ -61,35 +72,72 @@ const Signup = () => {
   };
 
   const validateForm = () => {
-    const newErrors = {};
+    const emailRegex = /^\S+@\S+\.\S+$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+    let isValid = true;
 
-    // Email validation (simple format validation)
-    if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
-      newErrors.email = "Invalid email format";
+    // Enter Email validation
+    if (!formData.email) {
+      setFormError((prevState) => ({
+        ...prevState,
+        email: "Please enter a valid email address.",
+      }));
+      isValid = false;
+    } else if (!emailRegex.test(formData.email)) {
+      setFormError((prevState) => ({
+        ...prevState,
+        email: "Invalid email format.",
+      }));
+      isValid = false;
     }
 
-    // Phone number validation (simple format validation)
-    if (!/^\d{10}$/.test(formData.phoneNumber)) {
-      newErrors.phoneNumber = "Invalid phone number format";
+    // Enter Phone number validation
+    if (!formData.phoneNumber) {
+      setFormError((prevState) => ({
+        ...prevState,
+        phoneNumber: "Please enter a phone number.",
+      }));
+      isValid = false;
+    } else if (!/^\d{10}$/.test(formData.phoneNumber)) {
+      setFormError((prevState) => ({
+        ...prevState,
+        phoneNumber: "Please enter a 10-digit phone number.",
+      }));
+      isValid = false;
     }
 
-    // Password validation (customize the regex pattern to match your criteria)
-    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(formData.password)) {
-      newErrors.password = "Password must match your criteria"; // Update the error message
+    // Password validation
+    if (!formData.password) {
+      setFormError((prevState) => ({
+        ...prevState,
+        password: "Password must contain at least 8 characters.",
+      }));
+      isValid = false;
+    } else if (!passwordRegex.test(formData.password)) {
+      setFormError((prevState) => ({
+        ...prevState,
+        password:
+          "Password must contain at least one uppercase letter, lowercase letter, and numeric digit.",
+      }));
+      isValid = false;
     }
 
     // Confirm password validation
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match";
+    if (!formData.confirmPassword) {
+      setFormError((prevState) => ({
+        ...prevState,
+        confirmPassword: "Please confirm your password.",
+      }));
+      isValid = false;
+    } else if (formData.password !== formData.confirmPassword) {
+      setFormError((prevState) => ({
+        ...prevState,
+        confirmPassword: "Password and Confirm Password must match.",
+      }));
+      isValid = false;
     }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    return isValid;
   };
 
   return (
@@ -149,7 +197,9 @@ const Signup = () => {
               onChange={handleInputChange}
               placeholder="Enter Your Email"
             />
-            {errors.email && <p className="error-message-os">{errors.email}</p>}
+            {formError.email && (
+              <p className="error-message-os pt-1">{formError.email}</p>
+            )}
           </div>
 
           {/* <div className="signup__field">
@@ -168,14 +218,14 @@ const Signup = () => {
           </div> */}
           <div className="input-col-os">
             <Input
-              type="text"
+              type="number"
               name="phoneNumber"
               // required="required"
               onChange={handleInputChange}
               placeholder="Enter Your Phone Number"
             />
-            {errors.phoneNumber && (
-              <p className="error-message-os">{errors.phoneNumber}</p>
+            {formError.phoneNumber && (
+              <p className="error-message-os pt-1">{formError.phoneNumber}</p>
             )}
           </div>
 
@@ -201,8 +251,8 @@ const Signup = () => {
               onChange={handleInputChange}
               placeholder="Enter Your Password"
             />
-            {errors.password && (
-              <p className="error-message-os">{errors.password}</p>
+            {formError.password && (
+              <p className="error-message-os pt-1">{formError.password}</p>
             )}
           </div>
 
@@ -228,14 +278,20 @@ const Signup = () => {
               onChange={handleInputChange}
               placeholder="Confirm Your Password"
             />
-            {errors.confirmPassword && (
-              <p className="error-message-os">{errors.confirmPassword}</p>
+            {formError.confirmPassword && (
+              <p className="error-message-os pt-1">
+                {formError.confirmPassword}
+              </p>
             )}
           </div>
 
           {/* <h2>
             Already have an account? <span onClick={handleSignIn}>Sign in</span>
           </h2> */}
+          <div className="note-message-os pb-4"><span>Note : </span>
+            Password must contain at least one uppercase letter, lowercase
+            letter, and numeric digit.
+          </div>
 
           <button type="submit">Sign up</button>
 

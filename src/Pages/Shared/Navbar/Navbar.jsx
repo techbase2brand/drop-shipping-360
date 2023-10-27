@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Navbar.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
@@ -8,22 +8,38 @@ import { AppContext } from "../../../App";
 import logo from "../../../Assets/brand-logo.svg";
 
 const Navbar = () => {
-  // const { token } = useContext(AppContext);
+  const { userName } = useContext(AppContext);
   const Navigate = useNavigate();
-  const [activeLink, setActiveLink] = useState("link-1");
+  const [activeLink, setActiveLink] = useState("");
   // console.log("tokennnnnnnn", token)
-  const handleLink = (val) => {
+
+  useEffect(() => {
+    // Get the current URL path
+    const currentPath = window.location.pathname;
+    // console.log("currentPathhhhhh", currentPath)
+    if (currentPath === '/') {
+      setActiveLink('link-1');
+    } else if (currentPath === '/defaultsettings') {
+      setActiveLink('link-2');
+    }
+  }, []);
+
+// Handle active nav link
+  const handleActiveLink = (val) => {
     setActiveLink(val);
-    console.log("object", val);
+    // console.log("object", val);
   };
 
-  const handleSignout = () => {
+// Handle signout
+  const handleSignOut = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("username");
     Navigate("/login");
+    window.location.reload(true)
   };
 
   const token = localStorage.getItem("token");
-  console.log("localStorageToken", token);
+  // console.log("localStorageToken", token);
 
   return (
     <section className="Navbar-section-os">
@@ -31,22 +47,15 @@ const Navbar = () => {
         <div className="Navbar-col-os-1">
           <Link to={token ? "/" : "/login"}>
             <img src={logo} alt="" />
-            <span>SAAS INTEGRATOR</span>
+            <span>SAAS INTEGRATOR {userName ? `(${userName})` : ""}</span>
           </Link>
         </div>
-        {/* <div className="Navbar-col-os-2">
-          <div className="profile-image-os">
-            <img src="" alt="" />
-          </div>
-          {<div className="profile-name-os">Hello, Kavin Gada</div>}
-        </div> */}
         <div className="Navbar-col-os-3">
-          {/* <div className="Navbar-menu-heading-os">Menu</div> */}
           {token && (
             <Link
               to="/"
               className={activeLink === "link-1" ? "active" : ""}
-              onClick={() => handleLink("link-1")}
+              onClick={() => handleActiveLink("link-1")}
             >
               <span>
                 <svg
@@ -87,7 +96,7 @@ const Navbar = () => {
             <Link
               to="/defaultsettings"
               className={activeLink === "link-2" ? "active" : ""}
-              onClick={() => handleLink("link-2")}
+              onClick={() => handleActiveLink("link-2")}
             >
               <span>
                 <svg
@@ -110,7 +119,7 @@ const Navbar = () => {
             <Link
               to="/login"
               className={activeLink === "link-3" ? "active" : ""}
-              onClick={() => handleLink("link-3")}
+              onClick={() => handleActiveLink("link-3")}
             >
               <span></span>
               Login
@@ -120,7 +129,7 @@ const Navbar = () => {
             <Link
               to="/signup"
               className={activeLink === "link-4" ? "active" : ""}
-              onClick={() => handleLink("link-4")}
+              onClick={() => handleActiveLink("link-4")}
             >
               <span></span>
               Signup
@@ -131,8 +140,8 @@ const Navbar = () => {
               // to="/signup"
               className={activeLink === "link-5" ? "active" : ""}
               onClick={() => {
-                handleSignout();
-                handleLink("link-5");
+                handleSignOut();
+                handleActiveLink("link-5");
               }}
             >
               <span>
@@ -144,7 +153,7 @@ const Navbar = () => {
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    fill-rule="evenodd"
+                    fillRule="evenodd"
                     clipRule="evenodd"
                     d="M16.4414 16.8679L21.0037 11.5445C21.2216 11.296 21.3331 10.9822 21.3333 10.6668C21.3334 10.451 21.2814 10.2344 21.1757 10.0374C21.1287 9.94959 21.0714 9.86618 21.0037 9.78906L16.4414 4.46569C15.9622 3.90656 15.1204 3.84177 14.5613 4.32097C14.0022 4.80017 13.9374 5.6419 14.4166 6.20102L17.1011 9.33335L6.77495 9.33335C6.03857 9.33335 5.44162 9.9303 5.44162 10.6667C5.44162 11.4031 6.03857 12 6.77495 12L17.1013 12L14.4166 15.1325C13.9374 15.6916 14.0022 16.5334 14.5613 17.0126C15.1204 17.4918 15.9622 17.427 16.4414 16.8679ZM7.99992 2.66667C8.7363 2.66667 9.33325 3.26362 9.33325 4L9.33325 6C9.33325 6.73638 9.9302 7.33333 10.6666 7.33333C11.403 7.33333 11.9999 6.73638 11.9999 6L11.9999 4C11.9999 1.79086 10.2091 -4.86254e-07 7.99992 -5.82819e-07L3.99992 -7.57664e-07C1.79078 -8.54229e-07 -8.20943e-05 1.79086 -8.21908e-05 4L-8.27737e-05 17.3333C-8.28702e-05 19.5425 1.79078 21.3333 3.99992 21.3333L7.99992 21.3333C10.2091 21.3333 11.9999 19.5425 11.9999 17.3333L11.9999 15.3333C11.9999 14.597 11.403 14 10.6666 14C9.9302 14 9.33325 14.597 9.33325 15.3333L9.33325 17.3333C9.33325 18.0697 8.7363 18.6667 7.99992 18.6667L3.99992 18.6667C3.26354 18.6667 2.66658 18.0697 2.66658 17.3333L2.66658 4C2.66658 3.26362 3.26354 2.66667 3.99992 2.66667L7.99992 2.66667Z"
                     fill="white"

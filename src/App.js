@@ -8,15 +8,30 @@ function App() {
   const [csvData, setCSVData] = useState([]);
   const [file, setFile] = useState(null);
   const [token, setToken] = useState("");
+  const [userName, setUserName] = useState("");
 
-  // const localStorageToken = localStorage.getItem("token");
-  // console.log("localStorageToken", localStorageToken)
-  // useEffect(() => {
-  //   setToken(localStorageToken);    
-  // }, []);
+  const localStorageToken = localStorage.getItem("token");
+  // console.log("localStorageToken", localStorageToken);
+  const localStorageUserName = localStorage.getItem("username");
+  // console.log("localStorageUserName", localStorageUserName);
+  useEffect(() => {
+    setUserName(localStorageUserName);
+    setToken(localStorageToken);
+  }, []);
   return (
     <div className="App app-os">
-      <AppContext.Provider value={{ csvData, setCSVData, file, setFile, token, setToken }}>
+      <AppContext.Provider
+        value={{
+          csvData,
+          setCSVData,
+          file,
+          setFile,
+          token,
+          setToken,
+          userName,
+          setUserName,
+        }}
+      >
         <Pages />
       </AppContext.Provider>
     </div>

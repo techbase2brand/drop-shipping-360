@@ -5,6 +5,7 @@ import MainHeading from "../../Shared/MainHeading/MainHeading";
 import Button from "../../Shared/Button/Button";
 import axios from "axios";
 import { useEffect } from "react";
+import Input from "../../Shared/Input/Input";
 // import TooltipIcon from "../../../Assets/tooltip-icon.svg";
 
 const DefaultSettingsForm = () => {
@@ -157,6 +158,9 @@ const DefaultSettingsForm = () => {
         // setNonExistTag(response?.data?.status);
         console.log("saveDefautSetting responseeee", response);
         setFormConfirmMessage("Setting save successfully.");
+        setTimeout(() => {
+        setFormConfirmMessage("");
+        }, 5000);
       } catch (error) {
         console.log("saveDefautSetting errorrrr", error);
         // console.log("object message: ", error?.response?.data?.status);
@@ -169,37 +173,41 @@ const DefaultSettingsForm = () => {
     <section className="DefaultSettings-page-os">
       <div className="container-os">
         <form className="DefaultSettings-row-os">
-          <div className="default-padding-os">
+          <div className="DefaultSettingsPopup-heading-os">
             <MainHeading title="Default Settings" />
           </div>
 
-          <div className="DefaultSettingsPopup-col-os">
-            <span className="key-values-os">Sell below zero :</span>
-            <label className="control-os control--radio-os">
-              Yes
-              <input
-                type="radio"
-                name="belowZero"
-                value="CONTINUE"
-                checked={form.belowZero === "CONTINUE"}
-                onChange={handleInputChange}
-              />
-              <div className="control-indicatoros"></div>
-            </label>
-            <label className="control-os control--radio-os">
-              No
-              <input
-                type="radio"
-                name="belowZero"
-                value="DENY"
-                checked={form.belowZero === "DENY"}
-                onChange={handleInputChange}
-              />
-              <div className="control-indicatoros"></div>
-            </label>
+          <div className="DefaultSettingsPopup-input-row-os">
+            <div className="DefaultSettingsPopup-input-col-os-1">
+              <span className="key-values-os">Sell below zero :</span>
+            </div>
+            <div className="DefaultSettingsPopup-input-col-os-2">
+              <label className="control-os control--radio-os">
+                Yes
+                <input
+                  type="radio"
+                  name="belowZero"
+                  value="CONTINUE"
+                  checked={form.belowZero === "CONTINUE"}
+                  onChange={handleInputChange}
+                />
+                <div className="control-indicatoros"></div>
+              </label>
+              <label className="control-os control--radio-os">
+                No
+                <input
+                  type="radio"
+                  name="belowZero"
+                  value="DENY"
+                  checked={form.belowZero === "DENY"}
+                  onChange={handleInputChange}
+                />
+                <div className="control-indicatoros"></div>
+              </label>
+            </div>
           </div>
 
-          <div className="DefaultSettingsPopup-col-os">
+          {/* <div className="DefaultSettingsPopup-col-os">
             <span className="key-values-os">
               Choose your warehouse location :
             </span>
@@ -225,12 +233,45 @@ const DefaultSettingsForm = () => {
               </select>
               <div className="select__arrow"></div>
             </div>
+          </div> */}
+          <div className="DefaultSettingsPopup-input-row-os">
+            <div className="DefaultSettingsPopup-input-col-os-1">
+              <span className="key-values-os">
+                Choose your warehouse location :
+              </span>
+            </div>
+            <div className="DefaultSettingsPopup-input-col-os-2">
+              <div className="DefaultSettingsPopup-inputs-os">
+                <select
+                  name="location"
+                  value={form.location}
+                  onChange={handleInputChange}
+                >
+                  <option value="">select</option>
+                  {locationData.length > 0 &&
+                    locationData.map((loc, index) => {
+                      const locationId = (loc?.node?.id).split(
+                        "gid://shopify/Location/"
+                      );
+                      // console.log("idArray", locationId[1]);
+                      return (
+                        <option key={index} value={locationId[1]}>
+                          {loc?.node?.name}
+                        </option>
+                      );
+                    })}
+                </select>
+                <div className="select__arrow"></div>
+              </div>
+            </div>
           </div>
-
-          <div className="DefaultSettingsPopup-row-os-1">
-            <span className="compulsary-fields-os">*</span>
-            <div className="DefaultSettingsPopup-col-os">
+          
+          <div className="DefaultSettingsPopup-input-row-os">
+            <div className="DefaultSettingsPopup-input-col-os-1">
+              <span className="compulsary-fields-os">*</span>
               <span className="key-values-os">Buffer quantity :</span>
+            </div>
+            <div className="DefaultSettingsPopup-input-col-os-2">
               <label className="control-os control--radio-os">
                 Yes
                 <input
@@ -254,14 +295,16 @@ const DefaultSettingsForm = () => {
                 <div className="control-indicatoros"></div>
               </label>
               <div>
-                <input
-                  type="text"
-                  placeholder="Enter quantity"
-                  name="inputBufferQuantity"
-                  value={form.inputBufferQuantity}
-                  onChange={handleInputChange}
-                  disabled={form.bufferQuantity !== "yes"}
-                />
+                <div className="DefaultSettingsPopup-inputs-os">
+                  <Input
+                    type="text"
+                    placeholder="Quantity"
+                    name="inputBufferQuantity"
+                    value={form.bufferQuantity === "yes" ? form.inputBufferQuantity : "0"}
+                    onChange={handleInputChange}
+                    disabled={form.bufferQuantity !== "yes"}
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -276,7 +319,7 @@ const DefaultSettingsForm = () => {
             </div>
           )}
 
-          <div className="DefaultSettingsPopup-row-os-1">
+          {/* <div className="DefaultSettingsPopup-row-os-1">
             <span className="compulsary-fields-os">*</span>
             <div className="DefaultSettingsPopup-col-os">
               <span className="key-values-os">Expiry date :</span>
@@ -291,8 +334,26 @@ const DefaultSettingsForm = () => {
           </div>
           {formError.expiryDate && (
             <div className="error-message-os">{formError.expiryDate}</div>
+          )} */}
+          <div className="DefaultSettingsPopup-input-row-os">
+            <div className="DefaultSettingsPopup-input-col-os-1">
+              <span className="compulsary-fields-os">*</span>
+              <span className="key-values-os">Expiry date :</span>
+            </div>
+            <div className="DefaultSettingsPopup-input-col-os-2">
+              <Input
+                type="date"
+                placeholder="Enter sku"
+                name="expiryDate"
+                value={form.expiryDate}
+                onChange={handleInputChange}
+              />
+            </div>
+          </div>
+          {formError.expiryDate && (
+            <div className="error-message-os">{formError.expiryDate}</div>
           )}
-          <div className="CsvFile-submit-btn-os">
+          <div className="DefaultSettingsPopup-submit-os">
             <Button type="button" onClick={handleSave} title="Save" />
             <div className="success-message-os">{formConfirmMessage}</div>
           </div>

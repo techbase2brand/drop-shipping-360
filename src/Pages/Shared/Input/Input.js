@@ -1,7 +1,7 @@
 import React from "react";
 import "./Input.css";
 
-const Input = ({ type, name, required, onChange, placeholder, label, Asterisk }) => {
+const Input = ({ type, name, value, required, onChange, placeholder, label, Asterisk, disabled }) => {
   return (
     <div className="Input-os">
       {label && (
@@ -13,9 +13,11 @@ const Input = ({ type, name, required, onChange, placeholder, label, Asterisk })
       <input
         type={type}
         name={name}
+        value={value}
         required={required}
         onChange={onChange}
         placeholder={placeholder}
+        disabled={disabled}
       />
     </div>
   );

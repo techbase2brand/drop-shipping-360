@@ -4,3 +4,6 @@
 .key-values-os {
   font-weight: 600;
 }
+.DefaultSettings-row-os .DefaultSettingsPopup-input-row-os {
+  gap: 2%;
+}
